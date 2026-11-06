@@ -13,7 +13,7 @@ solar inverters, battery storage).
 
 | Member | Role | Subsystem |
 |--------|------|-----------|
-| **YOUR NAME** (matr. no. XXXXXXX) | Developer, architect, tester – all roles | Real-Time Energy Monitoring & Sustainability Analytics |
+| **Nasim Abhari** (matr. no. 7226039) | Developer, architect, tester – all roles | Real-Time Energy Monitoring & Sustainability Analytics |
 
 > The group originally had four members. After the other members left the course, the professor
 > approved that the project is completed by one student who focuses on one subsystem.
