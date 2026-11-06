@@ -14,16 +14,6 @@ turns the numbers into concrete recommendations.
 
 ![Dashboard](docs/screenshots/dashboard_top.png)
 
-> ### Hometask 4 – Exception Handling and Unit Tests
-> * **Error-handling class:** `ErrorHandler` in [`energy_app/errors.py`](energy_app/errors.py) with the exception
->   hierarchy `EnergySystemError` → `ValidationError`, `InvalidReadingError`, `BuildingNotFoundError`,
->   `MeterNotFoundError`, `AICoachError` (UML below). It returns JSON for `/api/...` and an HTML page for browsers,
->   logs every error and never shows internal details to users.
-> * **Tests:** 30 test functions / **39 test cases** with pytest and Flask's test client in [`tests/`](tests/) –
->   all passing, 93 % coverage → [`docs/test_results.txt`](docs/test_results.txt). Run them with `pytest`.
-> * 🎥 Hometask 4 video: [watch here](PASTE_YOUR_HA4_VIDEO_LINK_HERE)
-
-
 ---
 
 ## 👤 Team overview
