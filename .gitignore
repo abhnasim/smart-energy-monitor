@@ -6,3 +6,4 @@ venv/
 instance/
 .pytest_cache/
 .DS_Store
+/new_env

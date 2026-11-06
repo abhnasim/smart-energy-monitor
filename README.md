@@ -18,36 +18,36 @@ turns the numbers into concrete recommendations.
 
 ## 👤 Team overview
 
-| Member | Role | Subsystem |
-|--------|------|-----------|
-| **YOUR NAME** (matr. no. XXXXXXX) | Developer, architect, tester – all roles | Real-Time Energy Monitoring & Sustainability Analytics |
+| Member                               | Role                                     | Subsystem                                              |
+| ------------------------------------ | ---------------------------------------- | ------------------------------------------------------ |
+| **Nasim Abhari** (matr. no. 7226039) | Developer, architect, tester – all roles | Real-Time Energy Monitoring & Sustainability Analytics |
 
 > The group originally had four members and four subsystems. After the other members left the course,
 > the professor approved that this project is completed by one student and focuses on one subsystem.
 
 ## ✅ Features (capstone checklist)
 
-| Checklist item | Where |
-|----------------|-------|
-| Web interface | Flask + Bootstrap: dashboard, buildings, building details, AI coach |
-| Data analysis & visualisation | `analytics.py` (savings, CO₂, score) + Chart.js charts |
-| Database storage | Flask-SQLAlchemy → **MySQL** (Docker) / SQLite (local) |
-| OpenAI – AI Sustainability Coach | `coach.py` with rule-based fallback |
-| Testing results | 39 pytest tests, 93 % coverage → [`docs/test_results.txt`](docs/test_results.txt) |
-| Docker | `Dockerfile` + `docker-compose.yml` (web + MySQL) |
+| Checklist item                   | Where                                                                             |
+| -------------------------------- | --------------------------------------------------------------------------------- |
+| Web interface                    | Flask + Bootstrap: dashboard, buildings, building details, AI coach               |
+| Data analysis & visualisation    | `analytics.py` (savings, CO₂, score) + Chart.js charts                            |
+| Database storage                 | Flask-SQLAlchemy → **MySQL** (Docker) / SQLite (local)                            |
+| OpenAI – AI Sustainability Coach | `coach.py` with rule-based fallback                                               |
+| Testing results                  | 39 pytest tests, 93 % coverage → [`docs/test_results.txt`](docs/test_results.txt) |
+| Docker                           | `Dockerfile` + `docker-compose.yml` (web + MySQL)                                 |
 
-* **Real-time monitoring** – live stream of meter readings, net grid load updated every 3 seconds
-* **Dashboard** – consumption, own solar, cost, savings vs. benchmark baseline, CO₂ reduction (1 / 7 / 30 days)
-* **Sustainability score** – 0–100 and grade A–E (efficiency 50 %, renewables 30 %, peak usage 20 %)
-* **REST API** for IoT devices – `POST /api/readings`
-* **AI Sustainability Coach** – recommendations and free questions, answer history stored in the database
+- **Real-time monitoring** – live stream of meter readings, net grid load updated every 3 seconds
+- **Dashboard** – consumption, own solar, cost, savings vs. benchmark baseline, CO₂ reduction (1 / 7 / 30 days)
+- **Sustainability score** – 0–100 and grade A–E (efficiency 50 %, renewables 30 %, peak usage 20 %)
+- **REST API** for IoT devices – `POST /api/readings`
+- **AI Sustainability Coach** – recommendations and free questions, answer history stored in the database
 
 ## 🚀 How to start the project
 
 ### Option A – local (easiest, uses SQLite)
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/smart-energy-monitor.git
+git clone https://github.com/abhnasim/smart-energy-monitor.git
 cd smart-energy-monitor
 python -m venv .venv
 # Windows: .venv\Scripts\activate      macOS/Linux: source .venv/bin/activate
@@ -63,7 +63,7 @@ Open **http://127.0.0.1:5000** – three demo buildings with 7 days of simulated
 docker compose up --build
 ```
 
-Open **http://localhost:5000**. MySQL runs in its own container (`db`, port 3306).
+Open **http://localhost:5000**. MySQL runs in its own container (`db`, port 3307).
 
 ### Optional: enable the OpenAI coach
 
@@ -146,15 +146,15 @@ smart-energy-monitor/
 
 ## 🔌 REST API
 
-| Method | URL | Description |
-|--------|-----|-------------|
-| GET | `/api/health` | health check |
-| GET | `/api/buildings` | all buildings with meters |
-| POST | `/api/buildings` | create a building (`name`, `building_type`, `area_m2`, `city`) |
-| GET | `/api/buildings/<id>/summary?days=7` | KPIs + sustainability score |
-| POST | `/api/buildings/<id>/live` | one real-time tick (used by the dashboard) |
-| POST | `/api/readings` | ingest readings from IoT meters |
-| GET | `/api/pipeline` | pipeline statistics |
+| Method | URL                                  | Description                                                    |
+| ------ | ------------------------------------ | -------------------------------------------------------------- |
+| GET    | `/api/health`                        | health check                                                   |
+| GET    | `/api/buildings`                     | all buildings with meters                                      |
+| POST   | `/api/buildings`                     | create a building (`name`, `building_type`, `area_m2`, `city`) |
+| GET    | `/api/buildings/<id>/summary?days=7` | KPIs + sustainability score                                    |
+| POST   | `/api/buildings/<id>/live`           | one real-time tick (used by the dashboard)                     |
+| POST   | `/api/readings`                      | ingest readings from IoT meters                                |
+| GET    | `/api/pipeline`                      | pipeline statistics                                            |
 
 Example:
 
@@ -166,13 +166,13 @@ curl -X POST http://127.0.0.1:5000/api/readings \
 
 ## 🌿 Homework branches
 
-| Branch | Content |
-|--------|---------|
-| `Homeassignment1` | OOP classes: constructors, setup methods, getters & setters |
+| Branch                | Content                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| `Homeassignment1`     | OOP classes: constructors, setup methods, getters & setters                                |
 | `HomeworkAssignment2` | Real-time stream pipeline: ABCs, inheritance, operator overloading, iterators & generators |
-| `HomeworkAssignment3` | Flask web app + MySQL database + AI coach |
-| `HomeworkAssignment4` | Exception handling class + automated tests |
-| `main` | Final capstone project |
+| `HomeworkAssignment3` | Flask web app + MySQL database + AI coach                                                  |
+| `HomeworkAssignment4` | Exception handling class + automated tests                                                 |
+| `main`                | Final capstone project                                                                     |
 
 ## 🛠️ Technologies
 
