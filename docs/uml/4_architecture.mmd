@@ -1,0 +1,28 @@
+flowchart LR
+  subgraph Sources["IoT smart meters"]
+    SIM["simulate_readings()<br/>generator"]
+    IOT["POST /api/readings<br/>JSON from devices"]
+  end
+  subgraph Pipeline["Stream pipeline (pipeline.py)"]
+    direction TB
+    F1[InactiveMeterFilter] --> F2[ThresholdFilter] --> T1[EnergyConverter] --> T2[CarbonTransformer] --> T3[PeakTariffFlagger] --> T4[LoadBalanceTracker]
+  end
+  subgraph Storage["Database"]
+    DB[("MySQL / SQLite<br/>buildings · meters<br/>readings · coach_advice")]
+  end
+  subgraph Analytics["Analytics (analytics.py)"]
+    direction TB
+    AN[EnergyAnalyzer] --> SC[SustainabilityScorer]
+  end
+  subgraph Web["Flask web app"]
+    DASH["Dashboard<br/>Chart.js"]
+    COACH["AI Sustainability Coach"]
+  end
+  OAI(["OpenAI API"])
+  SIM --> F1
+  IOT --> F1
+  T4 --> DB
+  DB --> AN
+  SC --> DASH
+  SC --> COACH
+  COACH <--> OAI

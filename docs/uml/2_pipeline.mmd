@@ -1,0 +1,73 @@
+%%{init: {"layout": "elk"}}%%
+classDiagram
+direction TB
+class StreamProcessor {
+  <<abstract>>
+  +int received
+  +int passed
+  +process(reading)* EnergyReading
+  +handle(reading) EnergyReading
+  +#95;#95;or#95;#95;(other) Pipeline
+  +#95;#95;add#95;#95;(other) Pipeline
+  +#95;#95;call#95;#95;(stream) Iterator
+}
+class FilterProcessor {
+  <<abstract>>
+  +keep(reading)* bool
+  +process(reading)
+}
+class TransformProcessor {
+  <<abstract>>
+  +transform(reading)* EnergyReading
+  +process(reading)
+}
+class InactiveMeterFilter { +keep(reading) bool }
+class ThresholdFilter {
+  +float min_power_kw
+  +keep(reading) bool
+}
+class EnergyConverter { +transform(reading) }
+class CarbonTransformer {
+  +CarbonCalculator calculator
+  +transform(reading)
+}
+class PeakTariffFlagger {
+  +CarbonCalculator calculator
+  +transform(reading)
+}
+class LoadBalanceTracker {
+  -dict _latest
+  +transform(reading)
+  +net_load_kw(building_id) float
+  +snapshot() dict
+}
+class Pipeline {
+  +list~StreamProcessor~ processors
+  +process(reading)
+  +#95;#95;or#95;#95;(other) Pipeline
+  +#95;#95;len#95;#95;() int
+  +find(type) StreamProcessor
+  +stats() list
+}
+class MeterReadingStream {
+  -iterator _source
+  -int _limit
+  -int _count
+  +#95;#95;iter#95;#95;() MeterReadingStream
+  +#95;#95;next#95;#95;() EnergyReading
+}
+class simulate_readings {
+  <<generator function>>
+  +yield EnergyReading
+}
+StreamProcessor <|-- FilterProcessor
+StreamProcessor <|-- TransformProcessor
+FilterProcessor <|-- InactiveMeterFilter
+FilterProcessor <|-- ThresholdFilter
+TransformProcessor <|-- EnergyConverter
+TransformProcessor <|-- CarbonTransformer
+TransformProcessor <|-- PeakTariffFlagger
+TransformProcessor <|-- LoadBalanceTracker
+StreamProcessor <|-- Pipeline
+Pipeline "1" o-- "*" StreamProcessor : chains
+MeterReadingStream ..> simulate_readings : consumes
