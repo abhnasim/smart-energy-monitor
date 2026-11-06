@@ -1,19 +1,28 @@
-# Start everything with:  docker compose up --build
+# Start with:  docker compose up --build
 # Then open http://localhost:5000
 services:
   db:
-    image: mysql:8.0
+    image: mysql:8.0.44
     environment:
       MYSQL_DATABASE: energy
       MYSQL_USER: energy
       MYSQL_PASSWORD: energy
       MYSQL_ROOT_PASSWORD: rootpassword
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpassword"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-uroot",
+          "-prootpassword",
+        ]
       interval: 5s
       timeout: 5s
       retries: 20

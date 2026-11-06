@@ -30,7 +30,7 @@ turns the numbers into concrete recommendations.
 
 | Member | Role | Subsystem |
 |--------|------|-----------|
-| **YOUR NAME** (matr. no. XXXXXXX) | Developer, architect, tester – all roles | Real-Time Energy Monitoring & Sustainability Analytics |
+| **Nasim Abhari** (matr. no. 7226039) | Developer, architect, tester – all roles | Real-Time Energy Monitoring & Sustainability Analytics |
 
 > The group originally had four members and four subsystems. After the other members left the course,
 > the professor approved that this project is completed by one student and focuses on one subsystem.
@@ -57,7 +57,7 @@ turns the numbers into concrete recommendations.
 ### Option A – local (easiest, uses SQLite)
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/smart-energy-monitor.git
+git clone https://github.com/abhnasim/smart-energy-monitor.git
 cd smart-energy-monitor
 python -m venv .venv
 # Windows: .venv\Scripts\activate      macOS/Linux: source .venv/bin/activate
@@ -73,7 +73,7 @@ Open **http://127.0.0.1:5000** – three demo buildings with 7 days of simulated
 docker compose up --build
 ```
 
-Open **http://localhost:5000**. MySQL runs in its own container (`db`, port 3306).
+Open **http://localhost:5000**. MySQL runs in its own container (`db`, host port 3307).
 
 ### Optional: enable the OpenAI coach
 
