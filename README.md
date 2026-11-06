@@ -9,23 +9,22 @@ processes them in a real-time stream pipeline, stores them in MySQL and shows en
 carbon reduction and a sustainability score on a dashboard. An AI Sustainability Coach (OpenAI API)
 turns the numbers into concrete recommendations.
 
-🎥 **Video presentation:** [watch the screencast](PASTE_YOUR_VIDEO_LINK_HERE)
+🎥 **Video presentation:** [watch the screencast](VIDEO_LINK_HERE)
 📊 **Slides:** [`docs/presentation/`](docs/presentation/)
 
 ![Dashboard](docs/screenshots/dashboard_top.png)
 
 ---
 
-## 👤 Team overview
+## Team overview
 
 | Member                               | Role                                     | Subsystem                                              |
 | ------------------------------------ | ---------------------------------------- | ------------------------------------------------------ |
 | **Nasim Abhari** (matr. no. 7226039) | Developer, architect, tester – all roles | Real-Time Energy Monitoring & Sustainability Analytics |
 
-> The group originally had four members and four subsystems. After the other members left the course,
-> the professor approved that this project is completed by one student and focuses on one subsystem.
+> The group originally had four members and four subsystems. After the other members left the course.
 
-## ✅ Features (capstone checklist)
+## Features (capstone checklist)
 
 | Checklist item                   | Where                                                                             |
 | -------------------------------- | --------------------------------------------------------------------------------- |
@@ -42,7 +41,7 @@ turns the numbers into concrete recommendations.
 - **REST API** for IoT devices – `POST /api/readings`
 - **AI Sustainability Coach** – recommendations and free questions, answer history stored in the database
 
-## 🚀 How to start the project
+## How to start the project
 
 ### Option A – local (easiest, uses SQLite)
 
@@ -50,7 +49,6 @@ turns the numbers into concrete recommendations.
 git clone https://github.com/abhnasim/smart-energy-monitor.git
 cd smart-energy-monitor
 python -m venv .venv
-# Windows: .venv\Scripts\activate      macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 python app.py
 ```
@@ -68,8 +66,7 @@ Open **http://localhost:5000**. MySQL runs in its own container (`db`, port 3307
 ### Optional: enable the OpenAI coach
 
 ```bash
-cp .env.example .env        # Windows: copy .env.example .env
-# put your key into .env:  OPENAI_API_KEY=sk-...
+cp .env.example .env 
 ```
 
 Without a key the coach uses built-in rules, so the app always works.
@@ -88,7 +85,7 @@ python demo_oop.py          # classes, constructors, getters/setters
 python demo_pipeline.py     # stream pipeline with | operator, iterator, generator
 ```
 
-## 🏗️ System design
+## System design
 
 ### Architecture
 
@@ -117,7 +114,7 @@ python demo_pipeline.py     # stream pipeline with | operator, iterator, generat
 The Mermaid sources of all diagrams are in [`docs/uml/`](docs/uml/).
 Requirements (10 functional + 10 non-functional): [`docs/requirements.md`](docs/requirements.md).
 
-## 📁 Project structure
+## Project structure
 
 ```
 smart-energy-monitor/
@@ -144,7 +141,7 @@ smart-energy-monitor/
 └── requirements.txt
 ```
 
-## 🔌 REST API
+## REST API
 
 | Method | URL                                  | Description                                                    |
 | ------ | ------------------------------------ | -------------------------------------------------------------- |
@@ -164,7 +161,7 @@ curl -X POST http://127.0.0.1:5000/api/readings \
      -d '{"meter_id": 1, "power_kw": 42.5}'
 ```
 
-## 🌿 Homework branches
+## Homework branches
 
 | Branch                | Content                                                                                    |
 | --------------------- | ------------------------------------------------------------------------------------------ |
