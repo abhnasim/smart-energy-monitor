@@ -56,7 +56,7 @@ docs/                     UML diagram + requirements
 
 | Branch | Content |
 |--------|---------|
-| `Homeassignment1` | OOP classes: constructors, setup methods, getters & setters |
+| `HomeworkAssignment1` | OOP classes: constructors, setup methods, getters & setters |
 | `HomeworkAssignment2` | Real-time stream pipeline: ABCs, inheritance, operator overloading, iterators & generators |
 | `HomeworkAssignment3` | Flask web app + MySQL database + AI coach |
 | `HomeworkAssignment4` | Exception handling class + automated tests |
