@@ -1,0 +1,30 @@
+classDiagram
+direction TB
+class ErrorHandler {
+  +int error_count
+  +init_app(app)
+  +wants_json()$ bool
+  +respond(status, payload)
+  +handle_system_error(error)
+  +handle_http_error(error)
+  +handle_unexpected_error(error)
+}
+class EnergySystemError {
+  +int status_code = 500
+  +str error_code
+  +str message
+  +dict details
+  +to_dict() dict
+}
+class ValidationError { status_code = 400 }
+class InvalidReadingError { error_code = invalid_reading }
+class BuildingNotFoundError { status_code = 404 }
+class MeterNotFoundError { status_code = 404 }
+class AICoachError { status_code = 503 }
+Exception <|-- EnergySystemError
+EnergySystemError <|-- ValidationError
+ValidationError <|-- InvalidReadingError
+EnergySystemError <|-- BuildingNotFoundError
+EnergySystemError <|-- MeterNotFoundError
+EnergySystemError <|-- AICoachError
+ErrorHandler ..> EnergySystemError : catches and converts to JSON / HTML

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Error {{ status }}{% endblock %}
+{% block content %}
+<div class="card mx-auto" style="max-width: 560px"><div class="card-body text-center py-5">
+  <div class="display-5 fw-bold text-secondary">{{ status }}</div>
+  <h1 class="h4 mt-2">{{ payload.error|replace('_', ' ')|capitalize }}</h1>
+  <p class="text-secondary">{{ payload.message }}</p>
+  <a class="btn btn-success" href="{{ url_for('pages.index') }}">Back to dashboard</a>
+</div></div>
+{% endblock %}

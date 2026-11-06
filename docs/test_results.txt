@@ -1,0 +1,64 @@
+Test run: 2026-11-06 10:29  |  python -m pytest --cov=energy_app
+
+============================= test session starts ==============================
+collecting ... collected 39 items
+
+tests/test_domain.py::test_building_setup_installs_default_meters PASSED [  2%]
+tests/test_domain.py::test_building_rejects_invalid_area[0] PASSED       [  5%]
+tests/test_domain.py::test_building_rejects_invalid_area[-50] PASSED     [  7%]
+tests/test_domain.py::test_building_rejects_unknown_type_and_empty_name PASSED [ 10%]
+tests/test_domain.py::test_meter_activate_and_deactivate PASSED          [ 12%]
+tests/test_domain.py::test_only_battery_may_report_negative_power PASSED [ 15%]
+tests/test_domain.py::test_reading_from_dict_validates_fields PASSED     [ 17%]
+tests/test_domain.py::test_carbon_calculator_peak_tariff_and_setters PASSED [ 20%]
+tests/test_domain.py::test_score_grades[90-A] PASSED                     [ 23%]
+tests/test_domain.py::test_score_grades[85-A] PASSED                     [ 25%]
+tests/test_domain.py::test_score_grades[70-B] PASSED                     [ 28%]
+tests/test_domain.py::test_score_grades[60-C] PASSED                     [ 30%]
+tests/test_domain.py::test_score_grades[40-D] PASSED                     [ 33%]
+tests/test_domain.py::test_score_grades[12-E] PASSED                     [ 35%]
+tests/test_domain.py::test_analyzer_calculates_savings_and_renewable_share PASSED [ 38%]
+tests/test_pipeline.py::test_abstract_processor_cannot_be_instantiated PASSED [ 41%]
+tests/test_pipeline.py::test_pipe_and_plus_operators_build_flat_pipelines PASSED [ 43%]
+tests/test_pipeline.py::test_filters_drop_inactive_and_sub_threshold_readings PASSED [ 46%]
+tests/test_pipeline.py::test_transformers_add_energy_carbon_cost_and_peak_flag PASSED [ 48%]
+tests/test_pipeline.py::test_reading_stream_is_an_iterator_with_limit PASSED [ 51%]
+tests/test_pipeline.py::test_simulator_generator_and_load_balance_tracker PASSED [ 53%]
+tests/test_web.py::test_health_endpoint PASSED                           [ 56%]
+tests/test_web.py::test_dashboard_and_pages_render PASSED                [ 58%]
+tests/test_web.py::test_create_building_via_form_stores_meters_and_readings PASSED [ 61%]
+tests/test_web.py::test_create_building_with_invalid_data_shows_error PASSED [ 64%]
+tests/test_web.py::test_summary_api_returns_score PASSED                 [ 66%]
+tests/test_web.py::test_ingest_valid_reading_is_stored PASSED            [ 69%]
+tests/test_web.py::test_live_tick_returns_meter_values PASSED            [ 71%]
+tests/test_web.py::test_delete_building_removes_its_readings PASSED      [ 74%]
+tests/test_web.py::test_unknown_building_returns_json_404_for_api PASSED [ 76%]
+tests/test_web.py::test_unknown_building_returns_html_404_for_pages PASSED [ 79%]
+tests/test_web.py::test_invalid_reading_is_rejected_with_400 PASSED      [ 82%]
+tests/test_web.py::test_reading_for_unknown_meter_and_non_json_body PASSED [ 84%]
+tests/test_web.py::test_invalid_days_parameter_is_rejected PASSED        [ 87%]
+tests/test_web.py::test_unexpected_exceptions_return_500_json PASSED     [ 89%]
+tests/test_web.py::test_error_classes_carry_status_codes PASSED          [ 92%]
+tests/test_web.py::test_coach_without_api_key_uses_rules PASSED          [ 94%]
+tests/test_web.py::test_coach_uses_openai_answer PASSED                  [ 97%]
+tests/test_web.py::test_coach_falls_back_when_openai_fails PASSED        [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.13.18-final-0 _______________
+
+Name                      Stmts   Miss  Cover
+---------------------------------------------
+energy_app/__init__.py        0      0   100%
+energy_app/analytics.py     188     11    94%
+energy_app/coach.py          61      9    85%
+energy_app/domain.py        206     14    93%
+energy_app/errors.py         62      2    97%
+energy_app/models.py         62      2    97%
+energy_app/pipeline.py      143      6    96%
+energy_app/routes.py         80     12    85%
+energy_app/services.py      105      3    97%
+energy_app/simulator.py      51      7    86%
+energy_app/webapp.py         48      8    83%
+---------------------------------------------
+TOTAL                      1006     74    93%
+============================== 39 passed in 1.02s ==============================

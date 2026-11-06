@@ -12,11 +12,11 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from flask import Flask, current_app, jsonify
+from flask import Flask, current_app
 
 from .analytics import CarbonCalculator
 from .coach import SustainabilityCoach
-from .errors import EnergySystemError
+from .errors import ErrorHandler
 from .models import BuildingModel, db
 from .pipeline import build_default_pipeline
 from .services import EnergyService
@@ -47,10 +47,7 @@ def create_app(test_config: dict | None = None) -> Flask:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
     db.init_app(app)
-
-    @app.errorhandler(EnergySystemError)
-    def handle_energy_error(error):
-        return jsonify(error.to_dict()), error.status_code
+    ErrorHandler(app)
 
     # One shared pipeline + coach for the whole application
     calculator = CarbonCalculator()

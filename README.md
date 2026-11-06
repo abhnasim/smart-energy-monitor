@@ -1,13 +1,30 @@
 # ⚡ AI-Powered Smart Energy Management System
 
-**Subsystem: Real-Time Energy Monitoring & Sustainability Analytics** · Python course, FH Dortmund
+**Subsystem: Real-Time Energy Monitoring & Sustainability Analytics**
 
-## Hometask 3 – Web APIs & Database Access Layers
+Capstone project – Python course, Fachhochschule Dortmund (Prof. Galyna Tabunshchyk), winter semester 2026/27.
 
-🎥 **Video presentation (3–5 min):** [watch here](PASTE_YOUR_VIDEO_LINK_HERE)
+A Flask web application that ingests smart-meter readings from buildings (offices, universities, homes),
+processes them in a real-time stream pipeline, stores them in MySQL and shows energy usage, savings,
+carbon reduction and a sustainability score on a dashboard. An AI Sustainability Coach (OpenAI API)
+turns the numbers into concrete recommendations.
 
-A **Flask** web application with a **MySQL** database. Smart-meter readings go through the stream
-pipeline from Hometask 2 and are stored in MySQL; the dashboard reads them back for analysis.
+🎥 **Video presentation:** [watch the screencast](PASTE_YOUR_VIDEO_LINK_HERE)
+📊 **Slides:** [`docs/presentation/`](docs/presentation/)
+
+![Dashboard](docs/screenshots/dashboard_top.png)
+
+> ### Hometask 4 – Exception Handling and Unit Tests
+> * **Error-handling class:** `ErrorHandler` in [`energy_app/errors.py`](energy_app/errors.py) with the exception
+>   hierarchy `EnergySystemError` → `ValidationError`, `InvalidReadingError`, `BuildingNotFoundError`,
+>   `MeterNotFoundError`, `AICoachError` (UML below). It returns JSON for `/api/...` and an HTML page for browsers,
+>   logs every error and never shows internal details to users.
+> * **Tests:** 30 test functions / **39 test cases** with pytest and Flask's test client in [`tests/`](tests/) –
+>   all passing, 93 % coverage → [`docs/test_results.txt`](docs/test_results.txt). Run them with `pytest`.
+> * 🎥 Hometask 4 video: [watch here](PASTE_YOUR_HA4_VIDEO_LINK_HERE)
+
+
+---
 
 ## 👤 Team overview
 
@@ -15,45 +32,127 @@ pipeline from Hometask 2 and are stored in MySQL; the dashboard reads them back 
 |--------|------|-----------|
 | **YOUR NAME** (matr. no. XXXXXXX) | Developer, architect, tester – all roles | Real-Time Energy Monitoring & Sustainability Analytics |
 
-> The group originally had four members. After the other members left the course, the professor
-> approved that the project is completed by one student who focuses on one subsystem.
+> The group originally had four members and four subsystems. After the other members left the course,
+> the professor approved that this project is completed by one student and focuses on one subsystem.
 
-![Dashboard](docs/screenshots/dashboard_top.png)
+## ✅ Features (capstone checklist)
 
-## ✅ What is included
+| Checklist item | Where |
+|----------------|-------|
+| Web interface | Flask + Bootstrap: dashboard, buildings, building details, AI coach |
+| Data analysis & visualisation | `analytics.py` (savings, CO₂, score) + Chart.js charts |
+| Database storage | Flask-SQLAlchemy → **MySQL** (Docker) / SQLite (local) |
+| OpenAI – AI Sustainability Coach | `coach.py` with rule-based fallback |
+| Testing results | 39 pytest tests, 93 % coverage → [`docs/test_results.txt`](docs/test_results.txt) |
+| Docker | `Dockerfile` + `docker-compose.yml` (web + MySQL) |
 
-| Part | Implementation |
-|------|----------------|
-| Web framework | Flask with blueprints (`energy_app/routes.py`), application factory (`energy_app/webapp.py`) |
-| Database | **MySQL 8** via Docker Compose (Flask-SQLAlchemy + PyMySQL); SQLite automatically for local development |
-| Data access layer | `energy_app/models.py` – tables `buildings`, `meters`, `readings`, `coach_advice`; `to_domain()` / `from_domain()` convert rows ↔ domain objects |
-| Service layer | `energy_app/services.py` – `EnergyService` (create buildings, ingest readings, summaries, live tick) |
-| Data output | Dashboard with KPIs and Chart.js charts, building details, JSON REST API |
-| AI | `energy_app/coach.py` – AI Sustainability Coach using the OpenAI API (rule-based fallback without key) |
+* **Real-time monitoring** – live stream of meter readings, net grid load updated every 3 seconds
+* **Dashboard** – consumption, own solar, cost, savings vs. benchmark baseline, CO₂ reduction (1 / 7 / 30 days)
+* **Sustainability score** – 0–100 and grade A–E (efficiency 50 %, renewables 30 %, peak usage 20 %)
+* **REST API** for IoT devices – `POST /api/readings`
+* **AI Sustainability Coach** – recommendations and free questions, answer history stored in the database
 
-## 🚀 How to start
+## 🚀 How to start the project
 
-### With MySQL (Docker)
-
-```bash
-docker compose up --build
-```
-
-Open http://localhost:5000
-
-### Locally with SQLite (no Docker needed)
+### Option A – local (easiest, uses SQLite)
 
 ```bash
+git clone https://github.com/YOUR_GITHUB_USERNAME/smart-energy-monitor.git
+cd smart-energy-monitor
 python -m venv .venv
 # Windows: .venv\Scripts\activate      macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 python app.py
 ```
 
-Open http://127.0.0.1:5000 – three demo buildings with 7 days of data are created automatically.
+Open **http://127.0.0.1:5000** – three demo buildings with 7 days of simulated data are created automatically.
 
-To use your own MySQL server instead, set in `.env`:
-`DATABASE_URL=mysql+pymysql://USER:PASSWORD@localhost:3306/energy`
+### Option B – Docker with MySQL
+
+```bash
+docker compose up --build
+```
+
+Open **http://localhost:5000**. MySQL runs in its own container (`db`, port 3306).
+
+### Optional: enable the OpenAI coach
+
+```bash
+cp .env.example .env        # Windows: copy .env.example .env
+# put your key into .env:  OPENAI_API_KEY=sk-...
+```
+
+Without a key the coach uses built-in rules, so the app always works.
+
+### Run the tests
+
+```bash
+pytest                      # 39 tests
+pytest --cov=energy_app     # with coverage (pip install pytest-cov)
+```
+
+### Console demos (Hometasks 1 and 2)
+
+```bash
+python demo_oop.py          # classes, constructors, getters/setters
+python demo_pipeline.py     # stream pipeline with | operator, iterator, generator
+```
+
+## 🏗️ System design
+
+### Architecture
+
+![Architecture](docs/uml/4_architecture.png)
+
+### UML class diagram – domain & analytics (Hometask 1)
+
+![Domain classes](docs/uml/1_domain.png)
+
+### UML class diagram – stream pipeline (Hometask 2)
+
+![Pipeline classes](docs/uml/2_pipeline.png)
+
+### UML class diagram – web, database & AI coach (Hometask 3)
+
+![Web classes](docs/uml/3_web.png)
+
+### UML class diagram – error handling (Hometask 4)
+
+![Error classes](docs/uml/6_errors.png)
+
+### Database schema
+
+![Database](docs/uml/5_database.png)
+
+The Mermaid sources of all diagrams are in [`docs/uml/`](docs/uml/).
+Requirements (10 functional + 10 non-functional): [`docs/requirements.md`](docs/requirements.md).
+
+## 📁 Project structure
+
+```
+smart-energy-monitor/
+├── app.py                  # starts the web app
+├── demo_oop.py             # Hometask 1 console demo
+├── demo_pipeline.py        # Hometask 2 console demo
+├── energy_app/
+│   ├── domain.py           # Building, SmartMeter, EnergyReading        (HA1)
+│   ├── analytics.py        # CarbonCalculator, EnergyAnalyzer, Scorer  (HA1)
+│   ├── pipeline.py         # ABCs, processors, Pipeline, iterator      (HA2)
+│   ├── simulator.py        # IoT meter simulator (generator)           (HA2)
+│   ├── models.py           # SQLAlchemy tables                         (HA3)
+│   ├── services.py         # EnergyService – application logic         (HA3)
+│   ├── coach.py            # AI Sustainability Coach (OpenAI)          (HA3)
+│   ├── routes.py           # Flask pages + JSON API                    (HA3)
+│   ├── webapp.py           # Flask application factory                 (HA3)
+│   ├── errors.py           # exception classes + ErrorHandler          (HA4)
+│   ├── templates/          # Jinja2 HTML pages
+│   └── static/             # CSS, JS, bundled Bootstrap + Chart.js
+├── tests/                  # 39 pytest tests                           (HA4)
+├── docs/                   # UML, requirements, screenshots, test results
+├── Dockerfile
+├── docker-compose.yml
+└── requirements.txt
+```
 
 ## 🔌 REST API
 
@@ -61,28 +160,21 @@ To use your own MySQL server instead, set in `.env`:
 |--------|-----|-------------|
 | GET | `/api/health` | health check |
 | GET | `/api/buildings` | all buildings with meters |
-| POST | `/api/buildings` | create a building |
+| POST | `/api/buildings` | create a building (`name`, `building_type`, `area_m2`, `city`) |
 | GET | `/api/buildings/<id>/summary?days=7` | KPIs + sustainability score |
-| POST | `/api/buildings/<id>/live` | one real-time tick |
+| POST | `/api/buildings/<id>/live` | one real-time tick (used by the dashboard) |
 | POST | `/api/readings` | ingest readings from IoT meters |
+| GET | `/api/pipeline` | pipeline statistics |
 
-## 🏗️ System design
+Example:
 
-### Web, database & AI classes
+```bash
+curl -X POST http://127.0.0.1:5000/api/readings \
+     -H "Content-Type: application/json" \
+     -d '{"meter_id": 1, "power_kw": 42.5}'
+```
 
-![Web classes](docs/uml/3_web.png)
-
-### Database schema
-
-![Database](docs/uml/5_database.png)
-
-### Architecture
-
-![Architecture](docs/uml/4_architecture.png)
-
-Earlier diagrams: [domain](docs/uml/1_domain.png) · [pipeline](docs/uml/2_pipeline.png)
-
-## 🌿 Branches
+## 🌿 Homework branches
 
 | Branch | Content |
 |--------|---------|
@@ -91,3 +183,7 @@ Earlier diagrams: [domain](docs/uml/1_domain.png) · [pipeline](docs/uml/2_pipel
 | `HomeworkAssignment3` | Flask web app + MySQL database + AI coach |
 | `HomeworkAssignment4` | Exception handling class + automated tests |
 | `main` | Final capstone project |
+
+## 🛠️ Technologies
+
+Python 3.10+, Flask, Flask-SQLAlchemy, MySQL 8 / SQLite, PyMySQL, OpenAI Python SDK, Bootstrap 5, Chart.js 4, pytest, Docker.
