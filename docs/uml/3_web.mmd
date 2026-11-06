@@ -1,0 +1,51 @@
+%%{init: {"layout": "elk"}}%%
+classDiagram
+direction LR
+class EnergyService {
+  +Pipeline pipeline
+  +SustainabilityCoach coach
+  +EnergyAnalyzer analyzer
+  +SustainabilityScorer scorer
+  +create_building(name, type, area, city)
+  +get_building(id) BuildingModel
+  +delete_building(id)
+  +ingest(readings) dict
+  +ingest_json(payload) dict
+  +simulate_history(id, days)
+  +live_tick(id) dict
+  +summary(id, days)
+  +ask_coach(id, question) AdviceModel
+}
+class SustainabilityCoach {
+  -str _api_key
+  -str _model
+  +is_ai_enabled bool
+  +build_context(building, summary, score)$ str
+  +advise(building, summary, score, question) tuple
+  +rule_based_advice(summary, score)$ str
+}
+class BuildingModel {
+  <<table buildings>>
+  id, name, building_type, area_m2, city
+  +to_domain() Building
+}
+class MeterModel {
+  <<table meters>>
+  id, building_id, label, meter_type, rated_power_kw
+  +to_domain() SmartMeter
+}
+class ReadingModel {
+  <<table readings>>
+  id, meter_id, building_id, timestamp, power_kw
+  energy_kwh, carbon_kg, cost_eur, is_peak
+  +from_domain(reading)$ ReadingModel
+}
+class AdviceModel {
+  <<table coach_advice>>
+  id, building_id, question, answer, source
+}
+EnergyService --> SustainabilityCoach : asks
+EnergyService ..> BuildingModel : reads / writes
+BuildingModel "1" *-- "*" MeterModel
+BuildingModel "1" *-- "*" ReadingModel
+BuildingModel "1" *-- "*" AdviceModel

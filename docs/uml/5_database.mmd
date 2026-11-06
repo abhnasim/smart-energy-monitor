@@ -1,0 +1,42 @@
+erDiagram
+  direction LR
+  buildings ||--o{ meters : has
+  buildings ||--o{ readings : stores
+  meters ||--o{ readings : sends
+  buildings ||--o{ coach_advice : receives
+  buildings {
+    int id PK
+    varchar name
+    varchar building_type
+    float area_m2
+    varchar city
+    datetime created_at
+  }
+  meters {
+    int id PK
+    int building_id FK
+    varchar label
+    varchar meter_type
+    float rated_power_kw
+    bool is_active
+  }
+  readings {
+    int id PK
+    int meter_id FK
+    int building_id FK
+    varchar meter_type
+    datetime timestamp
+    float power_kw
+    float energy_kwh
+    float carbon_kg
+    float cost_eur
+    bool is_peak
+  }
+  coach_advice {
+    int id PK
+    int building_id FK
+    datetime created_at
+    text question
+    text answer
+    varchar source
+  }

@@ -1,0 +1,35 @@
+# Start everything with:  docker compose up --build
+# Then open http://localhost:5000
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: energy
+      MYSQL_USER: energy
+      MYSQL_PASSWORD: energy
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: mysql+pymysql://energy:energy@db:3306/energy
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      SECRET_KEY: docker-secret-change-me
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mysql_data:

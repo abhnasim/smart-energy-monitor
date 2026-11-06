@@ -1,0 +1,42 @@
+:root {
+  --bg: #f4f5f2;
+  --surface: #ffffff;
+  --ink: #1d2320;
+  --ink-2: #57605b;
+  --line: #e3e6e1;
+  --brand: #146c43;
+  --series-consumption: #2a78d6;
+  --series-solar: #1baf7a;
+  --baseline: #8a8f8b;
+}
+
+body { background: var(--bg); color: var(--ink); }
+
+.app-nav { background: #12261c; }
+.app-nav .navbar-brand, .app-nav .nav-link { color: #eef5f0; }
+.app-nav .nav-link:hover { color: #9fe0bd; }
+.brand-mark { color: #f4c542; }
+
+.card { border: 1px solid var(--line); border-radius: 12px; box-shadow: none; }
+.card-title { font-size: .95rem; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: .03em; }
+
+.kpi { padding: 1rem 1.1rem; height: 100%; }
+.kpi-label { font-size: .8rem; color: var(--ink-2); text-transform: uppercase; letter-spacing: .04em; }
+.kpi-value { font-size: 1.7rem; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.kpi-sub { font-size: .85rem; color: var(--ink-2); }
+.kpi-good { color: var(--brand); }
+.kpi-bad { color: #b42318; }
+
+.score-ring { width: 72px; height: 72px; flex-shrink: 0; border-radius: 50%; display: grid; place-items: center;
+  font-size: 1.9rem; font-weight: 800; color: #fff; }
+.grade-A { background: #146c43; } .grade-B { background: #3d8b37; }
+.grade-C { background: #b7791f; } .grade-D { background: #c2410c; } .grade-E { background: #b42318; }
+.grade-badge { display: inline-block; padding: .15rem .55rem; border-radius: 6px; color: #fff; font-weight: 700; }
+
+.chart-box { position: relative; height: 280px; }
+.live-dot { width: 10px; height: 10px; border-radius: 50%; background: #adb5bd; display: inline-block; }
+.live-dot.on { background: #1baf7a; box-shadow: 0 0 0 4px rgba(27, 175, 122, .2); }
+
+.advice { white-space: pre-line; }
+.table-sm td, .table-sm th { font-variant-numeric: tabular-nums; }
+.legend-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{{ row.name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-end mb-4">
+  <div>
+    <h1 class="h3 mb-1">{{ row.name }}</h1>
+    <div class="text-secondary">{{ row.building_type|capitalize }} · {{ '{:,.0f}'.format(row.area_m2) }} m² · {{ row.city }}</div>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-success" href="{{ url_for('pages.dashboard', building_id=row.id) }}">Dashboard</a>
+    <a class="btn btn-success" href="{{ url_for('pages.coach', building_id=row.id) }}">Ask AI coach</a>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-6"><div class="card h-100"><div class="card-body">
+    <h2 class="card-title">Smart meters</h2>
+    <table class="table table-sm mb-0">
+      <thead><tr><th>ID</th><th>Label</th><th>Type</th><th class="text-end">Rated (kW)</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for m in row.meters %}
+        <tr><td>{{ m.id }}</td><td>{{ m.label }}</td><td>{{ m.meter_type }}</td>
+          <td class="text-end">{{ m.rated_power_kw }}</td>
+          <td>{{ 'active' if m.is_active else 'inactive' }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div></div></div>
+  <div class="col-lg-6"><div class="card h-100"><div class="card-body">
+    <h2 class="card-title">Stream pipeline (since app start)</h2>
+    <p class="small text-secondary"><code>{{ pipeline }}</code></p>
+    <table class="table table-sm mb-0">
+      <thead><tr><th>Step</th><th class="text-end">In</th><th class="text-end">Out</th><th class="text-end">Dropped</th></tr></thead>
+      <tbody>
+      {% for s in pipeline.stats() %}
+        <tr><td>{{ s.step }}</td><td class="text-end">{{ s.received }}</td><td class="text-end">{{ s.passed }}</td><td class="text-end">{{ s.dropped }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div></div></div>
+</div>
+
+<div class="card"><div class="card-body">
+  <h2 class="card-title">Latest stored readings</h2>
+  <div class="table-responsive">
+  <table class="table table-sm mb-0">
+    <thead><tr><th>Time</th><th>Meter</th><th>Type</th><th class="text-end">kW</th><th class="text-end">kWh</th><th class="text-end">CO₂ kg</th><th class="text-end">€</th><th>Tariff</th></tr></thead>
+    <tbody>
+    {% for r in readings %}
+      <tr><td>{{ r.timestamp.strftime('%d.%m %H:%M') }}</td><td>{{ r.meter_id }}</td><td>{{ r.meter_type }}</td>
+        <td class="text-end">{{ '%.2f'|format(r.power_kw) }}</td><td class="text-end">{{ '%.2f'|format(r.energy_kwh) }}</td>
+        <td class="text-end">{{ '%.2f'|format(r.carbon_kg) }}</td><td class="text-end">{{ '%.2f'|format(r.cost_eur) }}</td>
+        <td>{{ 'peak' if r.is_peak else 'normal' }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="small text-secondary mt-2 mb-0">Negative CO₂ / € = energy from solar or battery that did not have to be bought from the grid.</p>
+</div></div>
+{% endblock %}

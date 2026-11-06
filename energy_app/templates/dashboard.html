@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · {{ building.name }}{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+  <div>
+    <h1 class="h3 mb-1">{{ building.name }}</h1>
+    <div class="text-secondary">{{ building.building_type.value|capitalize }} · {{ '%.0f'|format(building.area_m2) }} m² · {{ building.city }}
+      · <a href="{{ url_for('pages.building_detail', building_id=row.id) }}">details</a>
+      · <a href="{{ url_for('pages.coach', building_id=row.id) }}">AI coach</a></div>
+  </div>
+  <form class="d-flex gap-2" method="get" id="filters">
+    <select class="form-select" onchange="location.href='/dashboard/' + this.value + '?days={{ days }}'" aria-label="Building">
+      {% for b in buildings %}
+        <option value="{{ b.id }}" {% if b.id == row.id %}selected{% endif %}>{{ b.name }}</option>
+      {% endfor %}
+    </select>
+    <div class="btn-group" role="group" aria-label="Period">
+      {% for d in [1, 7, 30] %}
+        <a class="btn btn-outline-success {% if d == days %}active{% endif %}" href="?days={{ d }}">{{ d }}d</a>
+      {% endfor %}
+    </div>
+  </form>
+</div>
+
+<!-- KPI tiles -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-2"><div class="card kpi">
+    <div class="kpi-label">Consumption</div>
+    <div class="kpi-value">{{ '{:,.0f}'.format(summary.consumption_kwh) }}</div>
+    <div class="kpi-sub">kWh in {{ days }} day(s)</div></div></div>
+  <div class="col-6 col-lg-2"><div class="card kpi">
+    <div class="kpi-label">Own solar</div>
+    <div class="kpi-value">{{ '{:,.0f}'.format(summary.solar_kwh) }}</div>
+    <div class="kpi-sub">kWh · {{ '%.0f'|format(summary.renewable_share * 100) }}% renewable</div></div></div>
+  <div class="col-6 col-lg-2"><div class="card kpi">
+    <div class="kpi-label">Net cost</div>
+    <div class="kpi-value">€{{ '{:,.0f}'.format(summary.cost_eur) }}</div>
+    <div class="kpi-sub">{{ '{:,.0f}'.format(summary.net_grid_kwh) }} kWh from grid</div></div></div>
+  <div class="col-6 col-lg-2"><div class="card kpi">
+    <div class="kpi-label">Savings vs baseline</div>
+    <div class="kpi-value {{ 'kpi-good' if summary.savings_eur >= 0 else 'kpi-bad' }}">€{{ '{:,.0f}'.format(summary.savings_eur) }}</div>
+    <div class="kpi-sub">{{ '{:,.0f}'.format(summary.savings_kwh) }} kWh saved</div></div></div>
+  <div class="col-6 col-lg-2"><div class="card kpi">
+    <div class="kpi-label">CO₂ reduction</div>
+    <div class="kpi-value {{ 'kpi-good' if summary.carbon_reduction_kg >= 0 else 'kpi-bad' }}">{{ '{:,.0f}'.format(summary.carbon_reduction_kg) }}</div>
+    <div class="kpi-sub">kg · emitted {{ '{:,.0f}'.format(summary.carbon_kg) }} kg</div></div></div>
+  <div class="col-6 col-lg-2"><div class="card kpi d-flex flex-row align-items-center gap-3">
+    <div class="score-ring grade-{{ score.grade }}">{{ score.grade }}</div>
+    <div><div class="kpi-label">Score</div>
+      <div class="kpi-value">{{ '%.0f'|format(score.total) }}</div>
+      <div class="kpi-sub">sustainability /100</div></div></div></div>
+</div>
+
+<!-- Live monitoring -->
+<div class="card mb-4"><div class="card-body">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h2 class="card-title mb-0"><span class="live-dot" id="liveDot"></span> Real-time monitoring</h2>
+    <div class="d-flex align-items-center gap-3">
+      <span class="text-secondary small" id="liveStatus">Paused · each tick = one simulated 1-minute reading per meter</span>
+      <button class="btn btn-success btn-sm" id="liveToggle" data-building="{{ row.id }}">▶ Start live stream</button>
+    </div>
+  </div>
+  <div class="row g-3">
+    <div class="col-lg-4">
+      <div class="kpi-label">Net grid load now</div>
+      <div class="kpi-value" id="netLoad">– kW</div>
+      <table class="table table-sm mt-2 mb-0">
+        <thead><tr><th>Meter</th><th class="text-end">Power (kW)</th><th>Status</th></tr></thead>
+        <tbody id="meterTable">
+          {% for m in row.meters %}
+            <tr><td>{{ m.label }}</td><td class="text-end">–</td><td>–</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-8"><div class="chart-box"><canvas id="liveChart" aria-label="Live net load"></canvas></div></div>
+  </div>
+</div></div>
+
+<!-- History charts -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-7"><div class="card h-100"><div class="card-body">
+    <h2 class="card-title">Daily energy vs baseline (kWh)</h2>
+    <div class="small text-secondary mb-2">
+      <span class="legend-swatch" style="background: var(--series-consumption)"></span>Consumption
+      <span class="legend-swatch ms-3" style="background: var(--series-solar)"></span>Solar
+      <span class="legend-swatch ms-3" style="background: var(--baseline); height: 3px"></span>Benchmark baseline
+    </div>
+    <div class="chart-box"><canvas id="dailyChart"></canvas></div>
+  </div></div></div>
+  <div class="col-lg-5"><div class="card h-100"><div class="card-body">
+    <h2 class="card-title">Consumption by meter type (kWh)</h2>
+    <div class="chart-box"><canvas id="typeChart"></canvas></div>
+  </div></div></div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7"><div class="card h-100"><div class="card-body">
+    <h2 class="card-title">Net grid energy per hour – last 24 h (kWh)</h2>
+    <div class="chart-box"><canvas id="hourlyChart"></canvas></div>
+  </div></div></div>
+  <div class="col-lg-5"><div class="card h-100"><div class="card-body">
+    <h2 class="card-title">Sustainability score breakdown</h2>
+    {% for label, value, weight in [('Efficiency vs benchmark', score.efficiency_score, '50%'),
+                                    ('Renewable share', score.renewable_score, '30%'),
+                                    ('Low peak-hour usage', score.peak_score, '20%')] %}
+      <div class="d-flex justify-content-between small mt-3"><span>{{ label }} <span class="text-secondary">(weight {{ weight }})</span></span><strong>{{ '%.0f'|format(value) }}</strong></div>
+      <div class="progress" role="progressbar" aria-valuenow="{{ value }}" aria-valuemin="0" aria-valuemax="100" style="height: 10px">
+        <div class="progress-bar bg-success" style="width: {{ value }}%"></div>
+      </div>
+    {% endfor %}
+    <p class="small text-secondary mt-4 mb-0">
+      Intensity {{ '%.0f'|format(score.intensity_kwh_m2_year) }} kWh/m²/year vs benchmark {{ '%.0f'|format(score.benchmark_kwh_m2_year) }} ·
+      peak-hour share {{ '%.0f'|format(summary.peak_share * 100) }}% ·
+      grade scale A ≥ 85, B ≥ 70, C ≥ 55, D ≥ 40, E &lt; 40
+    </p>
+  </div></div></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='vendor/chart.umd.js') }}"></script>
+<script>window.SUMMARY = {{ summary.to_dict() | tojson }};</script>
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+{% endblock %}

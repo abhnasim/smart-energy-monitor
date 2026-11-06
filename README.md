@@ -2,12 +2,12 @@
 
 **Subsystem: Real-Time Energy Monitoring & Sustainability Analytics** · Python course, FH Dortmund
 
-## Hometask 2 – Real-Time Data Processing
+## Hometask 3 – Web APIs & Database Access Layers
 
 🎥 **Video presentation (3–5 min):** [watch here](PASTE_YOUR_VIDEO_LINK_HERE)
 
-An event-driven stream processing framework for **IoT smart-meter readings** (HVAC, lighting, plug loads,
-solar inverters, battery storage).
+A **Flask** web application with a **MySQL** database. Smart-meter readings go through the stream
+pipeline from Hometask 2 and are stored in MySQL; the dashboard reads them back for analysis.
 
 ## 👤 Team overview
 
@@ -18,61 +18,69 @@ solar inverters, battery storage).
 > The group originally had four members. After the other members left the course, the professor
 > approved that the project is completed by one student who focuses on one subsystem.
 
-## 🎯 Pipeline goal (Smart Energy Management System)
+![Dashboard](docs/screenshots/dashboard_top.png)
 
-1. **Filter** inactive / offline meters and sub-threshold readings (noise, standby, solar at night, idle battery)
-   → `InactiveMeterFilter`, `ThresholdFilter`
-2. **Transform** valid readings into energy (kWh), **carbon equivalents** (kg CO₂), cost with
-   **peak-tariff flags**, and the building's **net load balance**
-   → `EnergyConverter`, `CarbonTransformer`, `PeakTariffFlagger`, `LoadBalanceTracker`
+## ✅ What is included
 
-```python
-pipeline = (InactiveMeterFilter()
-            | ThresholdFilter(min_power_kw=0.05)
-            | EnergyConverter()
-            | CarbonTransformer(calculator)
-            | PeakTariffFlagger(calculator)
-            | LoadBalanceTracker())
+| Part | Implementation |
+|------|----------------|
+| Web framework | Flask with blueprints (`energy_app/routes.py`), application factory (`energy_app/webapp.py`) |
+| Database | **MySQL 8** via Docker Compose (Flask-SQLAlchemy + PyMySQL); SQLite automatically for local development |
+| Data access layer | `energy_app/models.py` – tables `buildings`, `meters`, `readings`, `coach_advice`; `to_domain()` / `from_domain()` convert rows ↔ domain objects |
+| Service layer | `energy_app/services.py` – `EnergyService` (create buildings, ingest readings, summaries, live tick) |
+| Data output | Dashboard with KPIs and Chart.js charts, building details, JSON REST API |
+| AI | `energy_app/coach.py` – AI Sustainability Coach using the OpenAI API (rule-based fallback without key) |
 
-for reading in pipeline(MeterReadingStream(simulate_readings(meters, start, ticks=24))):
-    print(reading)
+## 🚀 How to start
+
+### With MySQL (Docker)
+
+```bash
+docker compose up --build
 ```
 
-## ✅ OOP concepts → where they are (`energy_app/pipeline.py`)
+Open http://localhost:5000
 
-| Concept | Implementation |
-|---------|----------------|
-| Abstract Base Classes | `StreamProcessor` (abstract `process`), `FilterProcessor` (abstract `keep`), `TransformProcessor` (abstract `transform`) – all use `@abstractmethod` |
-| Inheritance & polymorphism | 6 concrete processors inherit from the ABCs; `Pipeline` calls `handle()` on each without knowing its type. `Pipeline` is itself a `StreamProcessor` (Composite pattern) |
-| Operator overloading | `__or__` and `__add__` → `a \| b` or `a + b` returns a new `Pipeline`; nested pipelines are flattened; `__len__` on `Pipeline` |
-| Iterators | `MeterReadingStream` implements `__iter__` and `__next__` (with optional limit, raises `StopIteration`) |
-| Generators | `simulate_readings()` (`simulator.py`) yields an endless stream of readings; `StreamProcessor.__call__` is a generator that processes lazily, one reading at a time |
+### Locally with SQLite (no Docker needed)
 
-## 🏗️ System design – UML class diagrams
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate      macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+python app.py
+```
 
-### Stream pipeline
+Open http://127.0.0.1:5000 – three demo buildings with 7 days of data are created automatically.
 
-![Pipeline classes](docs/uml/2_pipeline.png)
+To use your own MySQL server instead, set in `.env`:
+`DATABASE_URL=mysql+pymysql://USER:PASSWORD@localhost:3306/energy`
 
-### Domain classes (from Hometask 1)
+## 🔌 REST API
 
-![Domain classes](docs/uml/1_domain.png)
+| Method | URL | Description |
+|--------|-----|-------------|
+| GET | `/api/health` | health check |
+| GET | `/api/buildings` | all buildings with meters |
+| POST | `/api/buildings` | create a building |
+| GET | `/api/buildings/<id>/summary?days=7` | KPIs + sustainability score |
+| POST | `/api/buildings/<id>/live` | one real-time tick |
+| POST | `/api/readings` | ingest readings from IoT meters |
 
-### Data flow
+## 🏗️ System design
+
+### Web, database & AI classes
+
+![Web classes](docs/uml/3_web.png)
+
+### Database schema
+
+![Database](docs/uml/5_database.png)
+
+### Architecture
 
 ![Architecture](docs/uml/4_architecture.png)
 
-## 🚀 How to run
-
-Only Python 3.10+ is needed:
-
-```bash
-python demo_pipeline.py     # simulates 24 hours of an office building
-python demo_oop.py          # Hometask 1 demo
-```
-
-The output shows the processed readings (kWh, CO₂, €, PEAK flag) and statistics per step,
-e.g. how many readings each filter dropped.
+Earlier diagrams: [domain](docs/uml/1_domain.png) · [pipeline](docs/uml/2_pipeline.png)
 
 ## 🌿 Branches
 

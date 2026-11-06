@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Buildings{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Buildings</h1>
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card"><div class="card-body">
+      <h2 class="card-title">Monitored buildings</h2>
+      <table class="table align-middle mb-0">
+        <thead><tr><th>Name</th><th>Type</th><th class="text-end">Area (m²)</th><th>City</th><th class="text-end">Meters</th><th></th></tr></thead>
+        <tbody>
+        {% for b in buildings %}
+          <tr>
+            <td><a href="{{ url_for('pages.dashboard', building_id=b.id) }}">{{ b.name }}</a></td>
+            <td>{{ b.building_type|capitalize }}</td>
+            <td class="text-end">{{ '{:,.0f}'.format(b.area_m2) }}</td>
+            <td>{{ b.city }}</td>
+            <td class="text-end">{{ b.meters|length }}</td>
+            <td class="text-end text-nowrap">
+              <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('pages.building_detail', building_id=b.id) }}">Details</a>
+              <form class="d-inline" method="post" action="{{ url_for('pages.delete_building', building_id=b.id) }}"
+                    onsubmit="return confirm('Delete {{ b.name }} and all its readings?');">
+                <button class="btn btn-sm btn-outline-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="6" class="text-secondary">No buildings yet – add one on the right.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card"><div class="card-body">
+      <h2 class="card-title">Add a building</h2>
+      <form method="post" novalidate>
+        <div class="mb-3"><label class="form-label" for="name">Name</label>
+          <input class="form-control" id="name" name="name" placeholder="e.g. Library Building" required></div>
+        <div class="mb-3"><label class="form-label" for="building_type">Type</label>
+          <select class="form-select" id="building_type" name="building_type">
+            {% for t in building_types %}<option value="{{ t }}">{{ t|capitalize }}</option>{% endfor %}
+          </select></div>
+        <div class="mb-3"><label class="form-label" for="area_m2">Area (m²)</label>
+          <input class="form-control" id="area_m2" name="area_m2" type="number" min="1" step="1" placeholder="e.g. 1200" required></div>
+        <div class="mb-3"><label class="form-label" for="city">City</label>
+          <input class="form-control" id="city" name="city" value="Dortmund"></div>
+        <button class="btn btn-success w-100">Create with default smart meters</button>
+        <p class="small text-secondary mt-2 mb-0">The system installs HVAC, lighting, plug-load, solar and battery meters and simulates 7 days of history.</p>
+      </form>
+    </div></div>
+  </div>
+</div>
+{% endblock %}
