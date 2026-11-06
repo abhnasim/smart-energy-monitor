@@ -1,0 +1,107 @@
+%%{init: {"layout": "elk"}}%%
+classDiagram
+direction LR
+class Building {
+  -int _id
+  -str _name
+  -BuildingType _building_type
+  -float _area_m2
+  -str _city
+  -list~SmartMeter~ _meters
+  +#95;#95;init#95;#95;(name, building_type, area_m2, city)
+  +configure_default_meters() list
+  +add_meter(meter)
+  +name / building_type / area_m2 / city «property»
+  +meters «read-only property»
+}
+class SmartMeter {
+  -int _id
+  -str _label
+  -MeterType _meter_type
+  -float _rated_power_kw
+  -bool _is_active
+  +#95;#95;init#95;#95;(label, meter_type, rated_power_kw)
+  +activate()
+  +deactivate()
+  +create_reading(power_kw, timestamp) EnergyReading
+  +label / meter_type / rated_power_kw «property»
+}
+class EnergyReading {
+  +int meter_id
+  +int building_id
+  -MeterType _meter_type
+  -float _power_kw
+  -datetime _timestamp
+  -int _interval_minutes
+  +float energy_kwh
+  +float carbon_kg
+  +float cost_eur
+  +bool is_peak
+  +reset_calculations()
+  +from_dict(data)$ EnergyReading
+  +to_dict() dict
+}
+class BuildingType {
+  <<enumeration>>
+  OFFICE
+  UNIVERSITY
+  HOME
+}
+class MeterType {
+  <<enumeration>>
+  HVAC
+  LIGHTING
+  PLUG_LOADS
+  SOLAR
+  BATTERY
+  +is_consumer bool
+  +is_generator bool
+}
+class CarbonCalculator {
+  -float _emission_factor
+  -float _price
+  -float _peak_price
+  -tuple _peak_hours
+  +configure(**settings)
+  +is_peak(timestamp) bool
+  +price_at(timestamp) float
+  +carbon_for(kwh) float
+}
+class EnergyAnalyzer {
+  -CarbonCalculator _calculator
+  +baseline_kwh(building, days)$ float
+  +summarize(readings, building, days) EnergySummary
+}
+class EnergySummary {
+  <<dataclass>>
+  +consumption_kwh
+  +solar_kwh
+  +net_grid_kwh
+  +savings_kwh / savings_eur
+  +carbon_kg / carbon_reduction_kg
+  +renewable_share
+  +peak_share
+}
+class SustainabilityScorer {
+  -tuple _weights
+  +score(summary, building) SustainabilityScore
+  +grade_for(total)$ str
+}
+class SustainabilityScore {
+  <<dataclass>>
+  +total
+  +grade
+  +efficiency_score
+  +renewable_score
+  +peak_score
+}
+Building "1" o-- "*" SmartMeter : has
+SmartMeter ..> EnergyReading : creates
+Building --> BuildingType
+SmartMeter --> MeterType
+EnergyReading --> MeterType
+EnergyAnalyzer --> CarbonCalculator
+EnergyAnalyzer ..> EnergySummary : creates
+EnergyAnalyzer ..> EnergyReading : reads
+SustainabilityScorer ..> SustainabilityScore : creates
+SustainabilityScorer ..> EnergySummary : uses
