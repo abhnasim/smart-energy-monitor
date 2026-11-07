@@ -9,7 +9,8 @@ processes them in a real-time stream pipeline, stores them in MySQL and shows en
 carbon reduction and a sustainability score on a dashboard. An AI Sustainability Coach (OpenAI API)
 turns the numbers into concrete recommendations.
 
-🎥 **Video presentation:** [watch the screencast](VIDEO_LINK_HERE)
+🎥 **Video presentation:**
+Hometask1: https://drive.google.com/file/d/16fF5VDpErOGa824mTvOCKJ8O6pxDjiCd/view?usp=share_link 
 📊 **Slides:** [`docs/presentation/`](docs/presentation/)
 
 ![Dashboard](docs/screenshots/dashboard_top.png)
