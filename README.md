@@ -4,7 +4,7 @@
 
 ## Hometask 1 – Object-Oriented Concepts
 
-🎥 **Video presentation (3–5 min):** [watch here](PASTE_YOUR_VIDEO_LINK_HERE)
+🎥 **Video presentation:** https://youtu.be/5WZHNzWnqpA
 
 This branch translates the UML class diagram of the subsystem into Python classes.
 
