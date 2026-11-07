@@ -4,7 +4,7 @@
 
 ## Hometask 2 – Real-Time Data Processing
 
-🎥 **Video presentation (3–5 min):** [watch here](PASTE_YOUR_VIDEO_LINK_HERE)
+🎥 **Video presentation:** https://youtu.be/iHMZMBrI37o
 
 An event-driven stream processing framework for **IoT smart-meter readings** (HVAC, lighting, plug loads,
 solar inverters, battery storage).
