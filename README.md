@@ -4,7 +4,7 @@
 
 ## Hometask 3 – Web APIs & Database Access Layers
 
-🎥 **Video presentation (3–5 min):** [watch here](PASTE_YOUR_VIDEO_LINK_HERE)
+🎥 **Video presentation:** https://youtu.be/EG2nqYNcUi8
 
 A **Flask** web application with a **MySQL** database. Smart-meter readings go through the stream
 pipeline from Hometask 2 and are stored in MySQL; the dashboard reads them back for analysis.
