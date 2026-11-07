@@ -2,14 +2,8 @@
 
 **Subsystem: Real-Time Energy Monitoring & Sustainability Analytics**
 
-Capstone project – Python course, Fachhochschule Dortmund (Prof. Galyna Tabunshchyk), winter semester 2026/27.
+🎥 **Video presentation:** https://youtu.be/Cffh5JILA1c
 
-A Flask web application that ingests smart-meter readings from buildings (offices, universities, homes),
-processes them in a real-time stream pipeline, stores them in MySQL and shows energy usage, savings,
-carbon reduction and a sustainability score on a dashboard. An AI Sustainability Coach (OpenAI API)
-turns the numbers into concrete recommendations.
-
-🎥 **Video presentation:** [watch the screencast](PASTE_YOUR_VIDEO_LINK_HERE)
 📊 **Slides:** [`docs/presentation/`](docs/presentation/)
 
 ![Dashboard](docs/screenshots/dashboard_top.png)
@@ -21,7 +15,6 @@ turns the numbers into concrete recommendations.
 >   logs every error and never shows internal details to users.
 > * **Tests:** 30 test functions / **39 test cases** with pytest and Flask's test client in [`tests/`](tests/) –
 >   all passing, 93 % coverage → [`docs/test_results.txt`](docs/test_results.txt). Run them with `pytest`.
-> * 🎥 Hometask 4 video: [watch here](PASTE_YOUR_HA4_VIDEO_LINK_HERE)
 
 
 ---
