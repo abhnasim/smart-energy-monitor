@@ -9,8 +9,7 @@ processes them in a real-time stream pipeline, stores them in MySQL and shows en
 carbon reduction and a sustainability score on a dashboard. An AI Sustainability Coach (OpenAI API)
 turns the numbers into concrete recommendations.
 
-🎥 **Video presentation:**
-Hometask1: https://drive.google.com/file/d/16fF5VDpErOGa824mTvOCKJ8O6pxDjiCd/view?usp=share_link 
+🎥 **Video presentation:** coming soon (final screencast)
 📊 **Slides:** [`docs/presentation/`](docs/presentation/)
 
 ![Dashboard](docs/screenshots/dashboard_top.png)
@@ -23,7 +22,8 @@ Hometask1: https://drive.google.com/file/d/16fF5VDpErOGa824mTvOCKJ8O6pxDjiCd/vie
 | ------------------------------------ | ---------------------------------------- | ------------------------------------------------------ |
 | **Nasim Abhari** (matr. no. 7226039) | Developer, architect, tester – all roles | Real-Time Energy Monitoring & Sustainability Analytics |
 
-> The group originally had four members and four subsystems. After the other members left the course.
+   > The group originally had four members and four subsystems. After the other members left the course,
+   > the professor approved that this project is completed by one student and focuses on one subsystem.
 
 ## Features (capstone checklist)
 
