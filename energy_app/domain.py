@@ -50,8 +50,9 @@ class MeterType(str, Enum):
         return self is MeterType.SOLAR
 
 
-# Default meter set-up per building type: (meter type, rated power in kW).
-# Used by Building.configure_default_meters().
+# Default meter set-up per building type: (meter type, rated power in kW)
+# for a building of the reference size below. Used by
+# Building.configure_default_meters(), which scales it to the real floor area.
 DEFAULT_METERS: dict[BuildingType, list[tuple[MeterType, float]]] = {
     BuildingType.OFFICE: [
         (MeterType.HVAC, 60.0),
@@ -76,6 +77,13 @@ DEFAULT_METERS: dict[BuildingType, list[tuple[MeterType, float]]] = {
     ],
 }
 
+# Floor area (m²) that the ratings in DEFAULT_METERS were sized for.
+REFERENCE_AREA_M2: dict[BuildingType, float] = {
+    BuildingType.OFFICE: 2500.0,
+    BuildingType.UNIVERSITY: 8000.0,
+    BuildingType.HOME: 140.0,
+}
+
 
 class Building:
     """A monitored building."""
@@ -93,12 +101,18 @@ class Building:
 
     # ---- initialisation / setup -------------------------------------------
     def configure_default_meters(self) -> list["SmartMeter"]:
-        """Install the standard set of meters for this building type."""
+        """Install the standard set of meters for this building type.
+
+        The ratings grow with the floor area, so a small library and a large
+        campus building both get a realistic consumption per m².
+        """
         self._meters = []
+        scale = self.area_m2 / REFERENCE_AREA_M2[self.building_type]
         for number, (meter_type, rated_kw) in enumerate(
                 DEFAULT_METERS[self.building_type], start=1):
             label = f"{meter_type.value.upper()}-{number:02d}"
-            self.add_meter(SmartMeter(label, meter_type, rated_kw))
+            rated = max(round(rated_kw * scale, 2), 0.01)
+            self.add_meter(SmartMeter(label, meter_type, rated))
         return self._meters
 
     def add_meter(self, meter: "SmartMeter") -> None:

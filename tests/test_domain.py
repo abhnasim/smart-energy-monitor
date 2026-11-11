@@ -19,6 +19,14 @@ def test_building_setup_installs_default_meters():
     assert all(m.building is building for m in meters)
 
 
+def test_default_meter_ratings_scale_with_floor_area():
+    small = Building("Library", "university", 1200).configure_default_meters()
+    large = Building("Campus", "university", 8000).configure_default_meters()
+    for small_meter, large_meter in zip(small, large):
+        assert small_meter.rated_power_kw == pytest.approx(
+            large_meter.rated_power_kw * 1200 / 8000, abs=0.01)
+
+
 @pytest.mark.parametrize("area", [0, -50])
 def test_building_rejects_invalid_area(area):
     with pytest.raises(ValueError):

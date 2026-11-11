@@ -27,7 +27,7 @@ Subsystem: **Real-Time Energy Monitoring & Sustainability Analytics**
 | NFR3 | Reliability | If the OpenAI API is unavailable or no key is configured, the application keeps working with a rule-based coach. | `test_coach_falls_back_when_openai_fails` |
 | NFR4 | Robustness | Invalid input never crashes the application; errors return a correct HTTP status and a consistent JSON body (API) or a friendly page (browser). | `ErrorHandler`, 7 error-handling tests |
 | NFR5 | Maintainability | Layered architecture (domain → pipeline → analytics → service → web), PEP 8 style, docstrings in every module. | Code review, UML |
-| NFR6 | Testability | At least 15 automated tests run with one command (`pytest`); external services (OpenAI) are replaced by fakes in tests. | 39 tests, 93 % coverage |
+| NFR6 | Testability | At least 15 automated tests run with one command (`pytest`); external services (OpenAI) are replaced by fakes in tests. | 40 tests, 93 % coverage |
 | NFR7 | Portability | Runs with Docker Compose (Flask + MySQL) or locally with SQLite without code changes – only `DATABASE_URL` changes. | `docker-compose.yml`, `.env.example` |
 | NFR8 | Security | Secrets (API key, DB password) only in environment variables / `.env` (git-ignored); database access only through the ORM (no SQL injection); internal error details are never shown to users. | `.gitignore`, `test_unexpected_exceptions_return_500_json` |
 | NFR9 | Extensibility | A new processing step is one new subclass of `FilterProcessor` / `TransformProcessor` and is plugged in with the `\|` operator. | `pipeline.py` |

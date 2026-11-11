@@ -33,7 +33,7 @@ turns the numbers into concrete recommendations.
 | Data analysis & visualisation    | `analytics.py` (savings, CO₂, score) + Chart.js charts                            |
 | Database storage                 | Flask-SQLAlchemy → **MySQL** (Docker) / SQLite (local)                            |
 | OpenAI – AI Sustainability Coach | `coach.py` with rule-based fallback                                               |
-| Testing results                  | 39 pytest tests, 93 % coverage → [`docs/test_results.txt`](docs/test_results.txt) |
+| Testing results                  | 40 pytest tests, 93 % coverage → [`docs/test_results.txt`](docs/test_results.txt) |
 | Docker                           | `Dockerfile` + `docker-compose.yml` (web + MySQL)                                 |
 
 - **Real-time monitoring** – live stream of meter readings, net grid load updated every 3 seconds
@@ -67,15 +67,16 @@ Open **http://localhost:5000**. MySQL runs in its own container (`db`, port 3307
 ### Optional: enable the OpenAI coach
 
 ```bash
-cp .env.example .env 
+cp .env.example .env
 ```
 
+Then write your key after `OPENAI_API_KEY=` in `.env` (this file is git-ignored).
 Without a key the coach uses built-in rules, so the app always works.
 
 ### Run the tests
 
 ```bash
-pytest                      # 39 tests
+pytest                      # 40 tests
 pytest --cov=energy_app     # with coverage (pip install pytest-cov)
 ```
 
@@ -135,7 +136,7 @@ smart-energy-monitor/
 │   ├── errors.py           # exception classes + ErrorHandler          (HA4)
 │   ├── templates/          # Jinja2 HTML pages
 │   └── static/             # CSS, JS, bundled Bootstrap + Chart.js
-├── tests/                  # 39 pytest tests                           (HA4)
+├── tests/                  # 40 pytest tests                           (HA4)
 ├── docs/                   # UML, requirements, screenshots, test results
 ├── Dockerfile
 ├── docker-compose.yml
