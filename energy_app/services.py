@@ -10,6 +10,7 @@ Routes stay thin - they call EnergyService, which
 
 from __future__ import annotations
 
+import logging
 from datetime import datetime, timedelta
 
 from .analytics import CarbonCalculator, EnergyAnalyzer, SustainabilityScorer
@@ -20,6 +21,8 @@ from .errors import (AICoachError, BuildingNotFoundError, InvalidReadingError,
 from .models import AdviceModel, BuildingModel, MeterModel, ReadingModel, db
 from .pipeline import LoadBalanceTracker, Pipeline
 from .simulator import simulate_readings
+
+logger = logging.getLogger(__name__)
 
 
 class EnergyService:
@@ -143,8 +146,9 @@ class EnergyService:
         question = (question or "").strip()[:500] or None
         try:
             answer, source = self.coach.advise(building, summary, score, question)
-        except AICoachError:
+        except AICoachError as error:
             # Graceful degradation: the user still gets useful advice.
+            logger.warning("AI coach failed, using rule-based advice: %s", error)
             answer = ("(AI service unavailable - rule-based advice shown)\n"
                       + self.coach.rule_based_advice(summary, score))
             source = "rules"

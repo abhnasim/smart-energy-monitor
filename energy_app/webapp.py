@@ -38,6 +38,8 @@ def create_app(test_config: dict | None = None) -> Flask:
         SQLALCHEMY_ENGINE_OPTIONS={"pool_pre_ping": True},
         OPENAI_API_KEY=os.getenv("OPENAI_API_KEY"),
         OPENAI_MODEL=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+        GEMINI_API_KEY=os.getenv("GEMINI_API_KEY"),
+        GEMINI_MODEL=os.getenv("GEMINI_MODEL", "gemini-3.6-flash"),
         SEED_DEMO_DATA=os.getenv("SEED_DEMO_DATA", "1") == "1",
     )
     if test_config:
@@ -52,8 +54,7 @@ def create_app(test_config: dict | None = None) -> Flask:
     # One shared pipeline + coach for the whole application
     calculator = CarbonCalculator()
     app.extensions["pipeline"] = build_default_pipeline(calculator)
-    app.extensions["coach"] = SustainabilityCoach(app.config["OPENAI_API_KEY"],
-                                                  app.config["OPENAI_MODEL"])
+    app.extensions["coach"] = SustainabilityCoach.from_config(app.config)
     app.extensions["calculator"] = calculator
 
     from .routes import api, pages

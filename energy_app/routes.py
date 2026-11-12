@@ -83,7 +83,8 @@ def coach(building_id: int):
     building, summary, score = service.summary(building_id)
     return render_template("coach.html", row=service.get_building(building_id),
                            score=score, history=service.advice_history(building_id),
-                           ai_enabled=current_app.extensions["coach"].is_ai_enabled)
+                           ai_enabled=current_app.extensions["coach"].is_ai_enabled,
+                           provider_name=current_app.extensions["coach"].provider_name)
 
 
 # ================================ JSON API ==================================

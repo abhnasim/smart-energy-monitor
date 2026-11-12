@@ -7,3 +7,5 @@ instance/
 .pytest_cache/
 .DS_Store
 /new_env
+.coverage
+htmlcov/

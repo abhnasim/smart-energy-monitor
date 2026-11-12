@@ -138,13 +138,19 @@ class FakeOpenAI:
         self.chat = SimpleNamespace(completions=SimpleNamespace(create=create))
 
 
-def test_coach_uses_openai_answer(service, building):
+def test_coach_uses_ai_answer_from_openai_or_gemini(service, building):
     fake = FakeOpenAI("- Turn off HVAC at night")
     service.coach = SustainabilityCoach(client=fake)
     advice = service.ask_coach(building.id)
     assert advice.source == "openai"
     assert advice.answer == "- Turn off HVAC at night"
     assert "Test Office" in fake.last_messages[1]["content"]   # real numbers in the prompt
+
+    # Gemini uses the same OpenAI client; the answer is labelled with its provider
+    service.coach = SustainabilityCoach(client=FakeOpenAI("- Shift loads"), provider="gemini")
+    assert service.ask_coach(building.id).source == "gemini"
+    coach = SustainabilityCoach.from_config({"GEMINI_API_KEY": "test-key"})
+    assert coach.provider == "gemini" and coach.provider_name == "Google Gemini"
 
 
 def test_coach_falls_back_when_openai_fails(service, building):

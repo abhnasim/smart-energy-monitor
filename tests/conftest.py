@@ -13,6 +13,7 @@ def app():
         "SQLALCHEMY_DATABASE_URI": "sqlite://",     # in-memory database
         "SEED_DEMO_DATA": False,
         "OPENAI_API_KEY": None,
+        "GEMINI_API_KEY": None,
     })
     with app.app_context():
         db.create_all()

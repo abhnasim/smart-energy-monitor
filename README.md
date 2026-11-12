@@ -64,13 +64,19 @@ docker compose up --build
 
 Open **http://localhost:5000**. MySQL runs in its own container (`db`, port 3307).
 
-### Optional: enable the OpenAI coach
+### Optional: enable the AI coach (OpenAI or Google Gemini)
 
 ```bash
 cp .env.example .env
 ```
 
-Then write your key after `OPENAI_API_KEY=` in `.env` (this file is git-ignored).
+Then write your key in `.env` (this file is git-ignored):
+
+- **OpenAI:** after `OPENAI_API_KEY=`
+- **Google Gemini** (free tier, key from [Google AI Studio](https://aistudio.google.com/apikey)): after `GEMINI_API_KEY=`.
+  Gemini is called through its OpenAI-compatible endpoint, so the same OpenAI client is used.
+  If a Gemini key is set, it is used instead of OpenAI.
+
 Without a key the coach uses built-in rules, so the app always works.
 
 ### Run the tests

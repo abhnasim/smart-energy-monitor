@@ -109,6 +109,6 @@ class AdviceModel(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     question = db.Column(db.Text)
     answer = db.Column(db.Text, nullable=False)
-    source = db.Column(db.String(20), nullable=False)   # "openai" or "rules"
+    source = db.Column(db.String(20), nullable=False)   # "openai", "gemini" or "rules"
 
     building = db.relationship("BuildingModel", back_populates="advice")

@@ -12,9 +12,9 @@
 
 <div class="card mb-4"><div class="card-body">
   {% if ai_enabled %}
-    <p class="small text-success mb-2">✓ Connected to the OpenAI API – answers are generated from this building's live numbers.</p>
+    <p class="small text-success mb-2">✓ Connected to {{ provider_name }} – answers are generated from this building's live numbers.</p>
   {% else %}
-    <p class="small text-secondary mb-2">No OPENAI_API_KEY configured – the built-in rule-based coach answers instead.</p>
+    <p class="small text-secondary mb-2">No AI key configured (OPENAI_API_KEY or GEMINI_API_KEY) – the built-in rule-based coach answers instead.</p>
   {% endif %}
   <form method="post" class="d-flex flex-column flex-md-row gap-2">
     <input class="form-control" name="question" maxlength="500"
@@ -27,7 +27,7 @@
   <div class="card mb-3"><div class="card-body">
     <div class="d-flex justify-content-between small text-secondary mb-2">
       <span>{{ a.question or 'General recommendations' }}</span>
-      <span>{{ 'OpenAI' if a.source == 'openai' else 'Rule-based' }} · {{ a.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+      <span>{{ {'openai': 'OpenAI', 'gemini': 'Gemini'}.get(a.source, 'Rule-based') }} · {{ a.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
     </div>
     <div class="advice">{{ a.answer }}</div>
   </div></div>

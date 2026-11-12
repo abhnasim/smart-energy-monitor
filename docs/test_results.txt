@@ -1,4 +1,4 @@
-Test run: 2026-11-11 16:14  |  python -m pytest --cov=energy_app
+Test run: 2026-11-12 17:45  |  python -m pytest --cov=energy_app
 
 ============================= test session starts ==============================
 collecting ... collected 40 items
@@ -41,7 +41,7 @@ tests/test_web.py::test_invalid_days_parameter_is_rejected PASSED        [ 87%]
 tests/test_web.py::test_unexpected_exceptions_return_500_json PASSED     [ 90%]
 tests/test_web.py::test_error_classes_carry_status_codes PASSED          [ 92%]
 tests/test_web.py::test_coach_without_api_key_uses_rules PASSED          [ 95%]
-tests/test_web.py::test_coach_uses_openai_answer PASSED                  [ 97%]
+tests/test_web.py::test_coach_uses_ai_answer_from_openai_or_gemini PASSED [ 97%]
 tests/test_web.py::test_coach_falls_back_when_openai_fails PASSED        [100%]
 
 ================================ tests coverage ================================
@@ -51,7 +51,7 @@ Name                      Stmts   Miss  Cover
 ---------------------------------------------
 energy_app/__init__.py        0      0   100%
 energy_app/analytics.py     188     11    94%
-energy_app/coach.py          61      8    87%
+energy_app/coach.py          78      9    88%
 energy_app/domain.py        209     14    93%
 energy_app/errors.py         62      2    97%
 energy_app/models.py         62      2    97%
@@ -61,5 +61,5 @@ energy_app/services.py      105      3    97%
 energy_app/simulator.py      51      7    86%
 energy_app/webapp.py         48      8    83%
 ---------------------------------------------
-TOTAL                      1009     73    93%
-============================== 40 passed in 1.07s ==============================
+TOTAL                      1026     74    93%
+============================== 40 passed in 1.03s ==============================

@@ -2,6 +2,8 @@
 AI Sustainability Coach.
 
 Uses the OpenAI API to turn the building's numbers into concrete advice.
+Google Gemini works too: it offers an OpenAI-compatible endpoint, so the same
+OpenAI client is used with a different base URL, key and model.
 If no API key is configured (or the API fails) a rule-based coach answers
 instead, so the application always works - also offline during a demo.
 """
@@ -11,6 +13,10 @@ from __future__ import annotations
 from .analytics import EnergySummary, SustainabilityScore
 from .domain import Building
 from .errors import AICoachError
+
+# Supported AI providers: short id (stored with each answer) -> display name
+PROVIDERS = {"openai": "OpenAI", "gemini": "Google Gemini"}
+GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 
 SYSTEM_PROMPT = (
     "You are an energy-efficiency and sustainability coach for buildings. "
@@ -22,13 +28,28 @@ SYSTEM_PROMPT = (
 
 
 class SustainabilityCoach:
-    """Gives energy-saving advice with OpenAI, falling back to rules."""
+    """Gives energy-saving advice with OpenAI or Gemini, falling back to rules."""
 
     def __init__(self, api_key: str | None = None, model: str = "gpt-4o-mini",
-                 client=None) -> None:
+                 client=None, provider: str = "openai",
+                 base_url: str | None = None) -> None:
+        if provider not in PROVIDERS:
+            raise ValueError(f"Unknown AI provider '{provider}'")
         self._api_key = api_key or None
         self._model = model
         self._client = client          # can be injected (useful for tests)
+        self._provider = provider
+        self._base_url = base_url      # None = the normal OpenAI address
+
+    @classmethod
+    def from_config(cls, config) -> "SustainabilityCoach":
+        """Gemini if GEMINI_API_KEY is set, otherwise OpenAI (or rules without a key)."""
+        if config.get("GEMINI_API_KEY"):
+            return cls(config["GEMINI_API_KEY"],
+                       config.get("GEMINI_MODEL") or "gemini-3.6-flash",
+                       provider="gemini", base_url=GEMINI_BASE_URL)
+        return cls(config.get("OPENAI_API_KEY"),
+                   config.get("OPENAI_MODEL") or "gpt-4o-mini")
 
     # ---- getters & setters ------------------------------------------------
     @property
@@ -40,6 +61,14 @@ class SustainabilityCoach:
         if not value:
             raise ValueError("Model name must not be empty")
         self._model = value
+
+    @property
+    def provider(self) -> str:
+        return self._provider
+
+    @property
+    def provider_name(self) -> str:
+        return PROVIDERS[self._provider]
 
     @property
     def is_ai_enabled(self) -> bool:
@@ -67,7 +96,7 @@ class SustainabilityCoach:
     # ---- main entry point -------------------------------------------------
     def advise(self, building: Building, summary: EnergySummary,
                score: SustainabilityScore, question: str | None = None) -> tuple[str, str]:
-        """Return (answer, source). Raises AICoachError if OpenAI fails."""
+        """Return (answer, source). Raises AICoachError if the AI service fails."""
         if not self.is_ai_enabled:
             return self.rule_based_advice(summary, score), "rules"
 
@@ -84,14 +113,14 @@ class SustainabilityCoach:
             )
             answer = (response.choices[0].message.content or "").strip()
         except Exception as error:      # network, auth, quota ...
-            raise AICoachError(f"OpenAI request failed: {error}") from error
+            raise AICoachError(f"{self.provider_name} request failed: {error}") from error
         if not answer:
-            raise AICoachError("OpenAI returned an empty answer")
-        return answer, "openai"
+            raise AICoachError(f"{self.provider_name} returned an empty answer")
+        return answer, self._provider
 
     def _create_client(self):
         from openai import OpenAI      # imported lazily: only needed with a key
-        return OpenAI(api_key=self._api_key, timeout=30)
+        return OpenAI(api_key=self._api_key, base_url=self._base_url, timeout=30)
 
     # ---- offline fallback ---------------------------------------------------
     @staticmethod
