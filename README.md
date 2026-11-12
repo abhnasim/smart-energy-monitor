@@ -6,7 +6,7 @@ Capstone project – Python course, Fachhochschule Dortmund (Prof. Galyna Tabuns
 
 A Flask web application that ingests smart-meter readings from buildings (offices, universities, homes),
 processes them in a real-time stream pipeline, stores them in MySQL and shows energy usage, savings,
-carbon reduction and a sustainability score on a dashboard. An AI Sustainability Coach (OpenAI API)
+carbon reduction and a sustainability score on a dashboard. An AI Sustainability Coach (Google Gemini or OpenAI)
 turns the numbers into concrete recommendations.
 
 🎥 **Video presentation:** coming soon (final screencast)
@@ -32,7 +32,7 @@ turns the numbers into concrete recommendations.
 | Web interface                    | Flask + Bootstrap: dashboard, buildings, building details, AI coach               |
 | Data analysis & visualisation    | `analytics.py` (savings, CO₂, score) + Chart.js charts                            |
 | Database storage                 | Flask-SQLAlchemy → **MySQL** (Docker) / SQLite (local)                            |
-| OpenAI – AI Sustainability Coach | `coach.py` with rule-based fallback                                               |
+| AI Sustainability Coach (Gemini / OpenAI) | `coach.py` with rule-based fallback                                      |
 | Testing results                  | 40 pytest tests, 93 % coverage → [`docs/test_results.txt`](docs/test_results.txt) |
 | Docker                           | `Dockerfile` + `docker-compose.yml` (web + MySQL)                                 |
 
@@ -136,7 +136,7 @@ smart-energy-monitor/
 │   ├── simulator.py        # IoT meter simulator (generator)           (HA2)
 │   ├── models.py           # SQLAlchemy tables                         (HA3)
 │   ├── services.py         # EnergyService – application logic         (HA3)
-│   ├── coach.py            # AI Sustainability Coach (OpenAI)          (HA3)
+│   ├── coach.py            # AI Sustainability Coach (Gemini / OpenAI) (HA3)
 │   ├── routes.py           # Flask pages + JSON API                    (HA3)
 │   ├── webapp.py           # Flask application factory                 (HA3)
 │   ├── errors.py           # exception classes + ErrorHandler          (HA4)
@@ -181,4 +181,4 @@ curl -X POST http://127.0.0.1:5000/api/readings \
 
 ## 🛠️ Technologies
 
-Python 3.10+, Flask, Flask-SQLAlchemy, MySQL 8 / SQLite, PyMySQL, OpenAI Python SDK, Bootstrap 5, Chart.js 4, pytest, Docker.
+Python 3.10+, Flask, Flask-SQLAlchemy, MySQL 8 / SQLite, PyMySQL, OpenAI Python SDK (for Google Gemini and OpenAI), Bootstrap 5, Chart.js 4, pytest, Docker.
