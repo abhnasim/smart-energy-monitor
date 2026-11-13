@@ -9,7 +9,7 @@ processes them in a real-time stream pipeline, stores them in MySQL and shows en
 carbon reduction and a sustainability score on a dashboard. An AI Sustainability Coach (Google Gemini or OpenAI)
 turns the numbers into concrete recommendations.
 
-🎥 **Video presentation:** coming soon (final screencast)
+🎥 **Video presentation:** https://youtu.be/068xnKXDZzc
 📊 **Slides:** [`docs/presentation/`](docs/presentation/)
 
 ![Dashboard](docs/screenshots/dashboard_top.png)
