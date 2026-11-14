@@ -6,7 +6,9 @@ class EnergyService {
   +SustainabilityCoach coach
   +EnergyAnalyzer analyzer
   +SustainabilityScorer scorer
-  +create_building(name, type, area, city)
+  +#95;#95;init#95;#95;(pipeline, coach, calculator)
+  +list_buildings() list
+  +create_building(name, type, area, city, history_days)
   +get_building(id) BuildingModel
   +delete_building(id)
   +ingest(readings) dict
@@ -14,25 +16,41 @@ class EnergyService {
   +simulate_history(id, days)
   +live_tick(id) dict
   +summary(id, days)
+  +recent_readings(id, limit) list
   +ask_coach(id, question) AdviceModel
+  +advice_history(id, limit) list
 }
 class SustainabilityCoach {
   -str _api_key
   -str _model
+  -OpenAI _client
+  -str _provider
+  -str _base_url
+  +#95;#95;init#95;#95;(api_key, model, client, provider, base_url)
+  +from_config(config)$ SustainabilityCoach
+  +model «property»
+  +provider / provider_name «read-only property»
   +is_ai_enabled bool
   +build_context(building, summary, score)$ str
   +advise(building, summary, score, question) tuple
+  -_create_client() OpenAI
   +rule_based_advice(summary, score)$ str
+}
+class OpenAI {
+  <<external client - Google Gemini or OpenAI>>
+  +chat.completions.create(model, messages)
 }
 class BuildingModel {
   <<table buildings>>
   id, name, building_type, area_m2, city
   +to_domain() Building
+  +to_dict() dict
 }
 class MeterModel {
   <<table meters>>
   id, building_id, label, meter_type, rated_power_kw
   +to_domain() SmartMeter
+  +to_dict() dict
 }
 class ReadingModel {
   <<table readings>>
@@ -45,6 +63,7 @@ class AdviceModel {
   id, building_id, question, answer, source
 }
 EnergyService --> SustainabilityCoach : asks
+SustainabilityCoach --> OpenAI : uses
 EnergyService ..> BuildingModel : reads / writes
 BuildingModel "1" *-- "*" MeterModel
 BuildingModel "1" *-- "*" ReadingModel

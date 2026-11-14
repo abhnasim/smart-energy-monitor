@@ -5,11 +5,14 @@ class StreamProcessor {
   <<abstract>>
   +int received
   +int passed
+  +#95;#95;init#95;#95;()
   +process(reading)* EnergyReading
   +handle(reading) EnergyReading
+  +name / dropped «read-only property»
   +#95;#95;or#95;#95;(other) Pipeline
   +#95;#95;add#95;#95;(other) Pipeline
   +#95;#95;call#95;#95;(stream) Iterator
+  +#95;#95;repr#95;#95;() str
 }
 class FilterProcessor {
   <<abstract>>
@@ -24,41 +27,55 @@ class TransformProcessor {
 class InactiveMeterFilter { +keep(reading) bool }
 class ThresholdFilter {
   +float min_power_kw
+  +#95;#95;init#95;#95;(min_power_kw)
   +keep(reading) bool
+  +#95;#95;repr#95;#95;() str
 }
 class EnergyConverter { +transform(reading) }
 class CarbonTransformer {
   +CarbonCalculator calculator
+  +#95;#95;init#95;#95;(calculator)
   +transform(reading)
 }
 class PeakTariffFlagger {
   +CarbonCalculator calculator
+  +#95;#95;init#95;#95;(calculator)
   +transform(reading)
 }
 class LoadBalanceTracker {
   -dict _latest
+  +#95;#95;init#95;#95;()
   +transform(reading)
   +net_load_kw(building_id) float
   +snapshot() dict
 }
 class Pipeline {
   +list~StreamProcessor~ processors
+  +#95;#95;init#95;#95;(*processors)
   +process(reading)
   +#95;#95;or#95;#95;(other) Pipeline
+  +#95;#95;add#95;#95;(other) Pipeline
   +#95;#95;len#95;#95;() int
-  +find(type) StreamProcessor
+  +find(processor_type) StreamProcessor
   +stats() list
+  +#95;#95;repr#95;#95;() str
 }
 class MeterReadingStream {
   -iterator _source
   -int _limit
   -int _count
+  +#95;#95;init#95;#95;(source, limit)
   +#95;#95;iter#95;#95;() MeterReadingStream
   +#95;#95;next#95;#95;() EnergyReading
+  +count «read-only property»
 }
 class simulate_readings {
   <<generator function>>
   +yield EnergyReading
+}
+class build_default_pipeline {
+  <<factory function>>
+  +returns Pipeline
 }
 StreamProcessor <|-- FilterProcessor
 StreamProcessor <|-- TransformProcessor
@@ -71,3 +88,4 @@ TransformProcessor <|-- LoadBalanceTracker
 StreamProcessor <|-- Pipeline
 Pipeline "1" o-- "*" StreamProcessor : chains
 MeterReadingStream ..> simulate_readings : consumes
+build_default_pipeline ..> Pipeline : creates

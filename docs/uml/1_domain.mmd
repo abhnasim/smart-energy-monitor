@@ -8,11 +8,12 @@ class Building {
   -float _area_m2
   -str _city
   -list~SmartMeter~ _meters
-  +#95;#95;init#95;#95;(name, building_type, area_m2, city)
+  +#95;#95;init#95;#95;(name, building_type, area_m2, city, building_id)
   +configure_default_meters() list
   +add_meter(meter)
-  +name / building_type / area_m2 / city «property»
+  +id / name / building_type / area_m2 / city «property»
   +meters «read-only property»
+  +#95;#95;repr#95;#95;() str
 }
 class SmartMeter {
   -int _id
@@ -20,11 +21,14 @@ class SmartMeter {
   -MeterType _meter_type
   -float _rated_power_kw
   -bool _is_active
-  +#95;#95;init#95;#95;(label, meter_type, rated_power_kw)
+  -Building _building
+  +#95;#95;init#95;#95;(label, meter_type, rated_power_kw, is_active, meter_id)
   +activate()
   +deactivate()
-  +create_reading(power_kw, timestamp) EnergyReading
-  +label / meter_type / rated_power_kw «property»
+  +create_reading(power_kw, timestamp, interval_minutes) EnergyReading
+  +id / label / meter_type / rated_power_kw / building «property»
+  +is_active «read-only property»
+  +#95;#95;repr#95;#95;() str
 }
 class EnergyReading {
   +int meter_id
@@ -37,9 +41,13 @@ class EnergyReading {
   +float carbon_kg
   +float cost_eur
   +bool is_peak
+  +#95;#95;init#95;#95;(meter_id, meter_type, power_kw, timestamp, interval_minutes, building_id, is_meter_active)
   +reset_calculations()
   +from_dict(data)$ EnergyReading
   +to_dict() dict
+  +meter_type / power_kw / timestamp / interval_minutes «property»
+  +interval_hours «read-only property»
+  +#95;#95;repr#95;#95;() str
 }
 class BuildingType {
   <<enumeration>>
@@ -62,13 +70,17 @@ class CarbonCalculator {
   -float _price
   -float _peak_price
   -tuple _peak_hours
-  +configure(**settings)
+  +#95;#95;init#95;#95;(emission_factor_kg_per_kwh, price_eur_per_kwh, peak_price_eur_per_kwh, peak_hours)
+  +configure(**settings) CarbonCalculator
+  +emission_factor / price / peak_price / peak_hours «property»
   +is_peak(timestamp) bool
   +price_at(timestamp) float
   +carbon_for(kwh) float
 }
 class EnergyAnalyzer {
   -CarbonCalculator _calculator
+  +#95;#95;init#95;#95;(calculator)
+  +calculator «property»
   +baseline_kwh(building, days)$ float
   +summarize(readings, building, days) EnergySummary
 }
@@ -79,11 +91,16 @@ class EnergySummary {
   +net_grid_kwh
   +savings_kwh / savings_eur
   +carbon_kg / carbon_reduction_kg
-  +renewable_share
-  +peak_share
+  +renewable_share «property»
+  +peak_share «property»
+  +to_dict() dict
 }
 class SustainabilityScorer {
+  +list GRADES$
   -tuple _weights
+  +#95;#95;init#95;#95;(weights)
+  +weights «property»
+  -_linear(value, best, worst)$ float
   +score(summary, building) SustainabilityScore
   +grade_for(total)$ str
 }
@@ -94,6 +111,7 @@ class SustainabilityScore {
   +efficiency_score
   +renewable_score
   +peak_score
+  +to_dict() dict
 }
 Building "1" o-- "*" SmartMeter : has
 SmartMeter ..> EnergyReading : creates
